@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from Users.Usersapi.throttling import LoginThrottle
+from Users.models import UserProfile
 from rest_framework import viewsets
 from rest_framework import generics
 from django.contrib.auth.models import User
@@ -51,11 +52,8 @@ class LoginView(APIView):
         }
         return Response(data, status=200)
     
-class UserProfileView(APIView):
-    def get(self, request):
-        serializer = UserProfileSerializer(request.user)
-        if request.user.is_authenticated:
-            return Response(serializer.data)
-        elif not request.user.is_authenticated:
-            return Response({"error": "Authentication credentials were not provided."}, status=401)
+class UserProfileView(generics.ListAPIView):
+    serializer_class = UserProfileSerializer
+    def get_queryset(self):
+        return UserProfile.objects.filter(user=self.request.user)
     

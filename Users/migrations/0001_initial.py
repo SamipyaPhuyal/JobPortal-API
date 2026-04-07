@@ -15,16 +15,11 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Job',
+            name='UserProfile',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('position', models.CharField(max_length=100)),
-                ('company', models.CharField(max_length=100)),
-                ('location', models.CharField(max_length=100)),
-                ('description', models.TextField()),
-                ('requirements', models.TextField()),
                 ('type', models.CharField(max_length=50)),
-                ('posted_by', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='posted_jobs', to=settings.AUTH_USER_MODEL)),
+                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
     ]

@@ -9,6 +9,6 @@ class Job(models.Model):
     description = models.TextField()
     requirements = models.TextField()
     type = models.CharField(max_length=50)
-    posted_by= models.ForeignKey(User, on_delete=models.CASCADE, related_name='posted_jobs')
+    posted_by= models.ForeignKey(User, on_delete=models.CASCADE, related_name='posted_by')
     def __str__(self):
         return self.position

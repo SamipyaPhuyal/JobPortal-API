@@ -1,11 +1,13 @@
 from django.contrib.auth.models import User
 from rest_framework import permissions
+from Users.models import UserProfile
 
 class PostJobs(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
             return True
-        return (request.user.is_authenticated and request.user.type == "employer") or (request.user.is_authenticated and request.user.is_staff)
+        user=request.user
+        return (request.user.is_authenticated and user.userprofile.type == "employer") or (request.user.is_authenticated and request.user.is_staff)
     
 class EditJobs(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
