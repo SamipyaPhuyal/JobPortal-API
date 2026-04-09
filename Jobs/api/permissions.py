@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from Jobs.models import Application
 from rest_framework import permissions
 from Users.models import UserProfile
 
@@ -14,3 +15,16 @@ class EditJobs(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
         return request.user.is_authenticated and (obj.posted_by == request.user or request.user.is_staff)
+    
+class ApplyJobs(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        if request.method == 'POST':
+            user_type=getattr(getattr(request.user, 'userprofile', None), 'type', None)
+            return (request.user.is_authenticated and user_type == "employee") or (request.user.is_authenticated and request.user.is_staff)
+        if request.method == 'DELETE':
+            user_type=getattr(getattr(request.user, 'userprofile', None), 'type', None)
+            if Application.objects.filter(id=view.kwargs['pk'], applicant=request.user).exists():
+                return (request.user.is_authenticated and user_type == "employee") or (request.user.is_authenticated and request.user.is_staff)
+            return False
