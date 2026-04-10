@@ -8,7 +8,7 @@ class JobSerializer(serializers.ModelSerializer):
     class Meta:
         model = Job
         fields ="__all__"
-        read_only_fields = ["posted_by"]
+        read_only_fields = ["posted_by","total_applications"]
     def get_posted_by(self, obj):
         return obj.posted_by.username
     

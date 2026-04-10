@@ -18,8 +18,6 @@ class EditJobs(permissions.BasePermission):
         return request.user.is_authenticated and (obj.posted_by == request.user or request.user.is_staff)
 class ApplyJobs(permissions.BasePermission):
     def has_permission(self, request, view):
-        if request.method in permissions.SAFE_METHODS:
-            return True
         if request.method == 'POST':
             user_type=getattr(getattr(request.user, 'userprofile', None), 'type', None)
             return (request.user.is_authenticated and user_type == "employee") or (request.user.is_authenticated and request.user.is_staff)

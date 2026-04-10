@@ -10,6 +10,7 @@ class Job(models.Model):
     requirements = models.TextField()
     type = models.CharField(max_length=50)
     posted_by= models.ForeignKey(User, on_delete=models.CASCADE, related_name='posted_by')
+    total_applications = models.IntegerField(default=0)
     def __str__(self):
         return self.position
     

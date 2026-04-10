@@ -34,16 +34,16 @@ class ApplicationView(APIView):
 
             serializer = ApplicationSerializer(application)
             return Response(serializer.data)
-        else:
+        elif request.user.is_authenticated:
             applications = Application.objects.filter(applicant=request.user)
             serializer = ApplicationSerializer(applications, many=True)
             return Response(serializer.data)
-        
     def post(self, request,pk):
         job = Job.objects.get(pk=pk)
         serializer = ApplicationSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(applicant=request.user, job=job)
+            job.update(total_applications=job.total_applications + 1)
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
        
