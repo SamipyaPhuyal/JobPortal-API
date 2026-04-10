@@ -23,9 +23,9 @@ from Users.urls import urlpatterns as users_urls
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Notes API",
+        title="Job Portal API",
         default_version='v1',
-        description="API documentation for the Notes API",
+        description="API documentation for the Job Portal API",
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),

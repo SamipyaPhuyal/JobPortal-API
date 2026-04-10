@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 
 from Jobs.api.permissions import ApplyJobs, EditJobs, PostJobs
 from .models import Application, Job
@@ -24,6 +24,21 @@ class JobDetailView(generics.RetrieveUpdateDestroyAPIView):
 class ApplicationView(APIView):
     serializer_class = ApplicationSerializer
     permission_classes = [ApplyJobs]
+    
+    def get(self, request, pk=None):
+        if pk:
+            try:
+                application = Application.objects.get(pk=pk, applicant=request.user)
+            except Application.DoesNotExist:
+                application = Application.objects.get(pk=pk, job__posted_by=request.user)
+
+            serializer = ApplicationSerializer(application)
+            return Response(serializer.data)
+        else:
+            applications = Application.objects.filter(applicant=request.user)
+            serializer = ApplicationSerializer(applications, many=True)
+            return Response(serializer.data)
+        
     def post(self, request,pk):
         job = Job.objects.get(pk=pk)
         serializer = ApplicationSerializer(data=request.data)
@@ -35,4 +50,26 @@ class ApplicationView(APIView):
     def delete(self, request, pk):
         application = Application.objects.get(pk=pk, applicant=request.user)
         application.delete()
-        return Response("message: Application withdrawn", status=204)
+        return Response({"message": "Application withdrawn"}, status=204)
+    
+    def patch(self, request, pk):
+        application=Application.objects.get(pk=pk)
+        if (application.applicant == (request.user) or application.job.posted_by == (request.user)) or request.user.is_staff:
+            serializer = ApplicationSerializer(application, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=400)
+        return Response({"message": "You do not have permission to update this application."}, status=403)
+
+class ApplicationListView(generics.ListAPIView):
+    serializer_class = ApplicationSerializer
+    
+    def get_queryset(self):
+        user = self.request.user
+        user_type=getattr(getattr(user, 'userprofile', None), 'type', None)
+        if user_type == "employee":
+            return Application.objects.filter(applicant=user)
+        elif user_type == "employer":
+            return Application.objects.filter(job__posted_by=user)
+        return redirect('job-list')
