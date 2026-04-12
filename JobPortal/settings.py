@@ -127,7 +127,13 @@ STATIC_URL = 'static/'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),}
+    ),
+    'DEFAULT_THROTTLE_RATES': {
+        "anon": "100/hour",
+        "user": "100/hour",
+        "job-list": "5/min",
+    }
+    }
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=120),
     'AUTH_HEADER_TYPES': ('Bearer',),
