@@ -8,7 +8,6 @@ from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework.response import Response
 from Jobs.api.pagination import JobPagination
-from Jobs.api.throttling import ListRateThrottle
 from rest_framework.throttling import UserRateThrottle
 
 
@@ -49,7 +48,8 @@ class ApplicationView(APIView):
         serializer = ApplicationSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(applicant=request.user, job=job)
-            job.update(total_applications=job.total_applications + 1)
+            job.total_applications=job.total_applications + 1
+            job.save()
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
        
