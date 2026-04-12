@@ -9,13 +9,15 @@ from rest_framework import generics
 from rest_framework.response import Response
 from Jobs.api.pagination import JobPagination
 from Jobs.api.throttling import ListRateThrottle
+from rest_framework.throttling import UserRateThrottle
+
 
 class JobViewSet(generics.ListCreateAPIView):
     queryset = Job.objects.all()
     serializer_class = JobSerializer
     permission_classes = [PostJobs]
     pagination_class = JobPagination
-    throttle_classes = [ListRateThrottle]
+    throttle_scope = 'job-list'
     
     def perform_create(self, serializer):
         serializer.save(posted_by=self.request.user)

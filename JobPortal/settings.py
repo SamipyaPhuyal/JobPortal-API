@@ -128,10 +128,15 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_THROTTLE_CLASSES':(
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+        'rest_framework.throttling.ScopedRateThrottle',
+    ),
     'DEFAULT_THROTTLE_RATES': {
         "anon": "100/hour",
         "user": "100/hour",
-        "job-list": "5/min",
+        "job-list": "5/hour",
     }
     }
 SIMPLE_JWT = {
