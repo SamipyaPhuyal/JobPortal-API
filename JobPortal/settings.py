@@ -137,6 +137,7 @@ REST_FRAMEWORK = {
         "anon": "100/hour",
         "user": "100/hour",
         "job-list": "5/hour",
+        "job-create": "5/hour",
     }
     }
 SIMPLE_JWT = {

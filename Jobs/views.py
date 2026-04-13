@@ -8,16 +8,19 @@ from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework.response import Response
 from Jobs.api.pagination import JobPagination
-from rest_framework.throttling import UserRateThrottle
-
 
 class JobViewSet(generics.ListCreateAPIView):
     queryset = Job.objects.all()
     serializer_class = JobSerializer
     permission_classes = [PostJobs]
     pagination_class = JobPagination
-    throttle_scope = 'job-list'
     
+    def get_throttles(self):
+        if self.request.method=="GET":
+            self.throttle_scope="job-list"
+        else:
+            self.throttle.scope=="job-create"
+            return super().get_throttles()
     def perform_create(self, serializer):
         serializer.save(posted_by=self.request.user)
     
