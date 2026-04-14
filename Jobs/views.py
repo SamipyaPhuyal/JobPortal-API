@@ -16,7 +16,7 @@ class JobViewSet(generics.ListCreateAPIView):
     serializer_class = JobSerializer
     permission_classes = [PostJobs]
     pagination_class = JobPagination
-    filter_backends = [DjangoFilterBackend,SearchFilter]
+    filter_backends = [DjangoFilterBackend]
     filterset_fields = ['position','location','type']
     search_fields = ['position','location','type']
     
