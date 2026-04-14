@@ -8,19 +8,26 @@ from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework.response import Response
 from Jobs.api.pagination import JobPagination
+from rest_framework.filters import SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 class JobViewSet(generics.ListCreateAPIView):
     queryset = Job.objects.all()
     serializer_class = JobSerializer
     permission_classes = [PostJobs]
     pagination_class = JobPagination
+    filter_backends = [DjangoFilterBackend,SearchFilter]
+    filterset_fields = ['position','location','type']
+    search_fields = ['position','location','type']
+    
     
     def get_throttles(self):
         if self.request.method=="GET":
             self.throttle_scope="job-list"
         else:
-            self.throttle.scope=="job-create"
-            return super().get_throttles()
+            self.throttle_scope="job-create"
+        
+        return super().get_throttles()
     def perform_create(self, serializer):
         serializer.save(posted_by=self.request.user)
     
