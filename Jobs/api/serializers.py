@@ -7,7 +7,7 @@ class JobSerializer(serializers.ModelSerializer):
     posted_by = serializers.SerializerMethodField()
     class Meta:
         model = Job
-        fields =["position","company","location","description","requirements","type","posted_by","total_applications"]
+        fields ='__all__'
         read_only_fields = ["posted_by","total_applications"]
     def get_posted_by(self, obj):
         return obj.posted_by.username
