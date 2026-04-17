@@ -21,7 +21,7 @@ class JobViewSet(generics.ListCreateAPIView):
     filterset_fields = ['position','location','type']
     search_fields = ['position','location','type']
     
-    @method_decorator(cache_page(60,key_prefix="job-list"))
+    @method_decorator(cache_page(60*15),name='job-list')
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
     

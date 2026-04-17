@@ -6,5 +6,5 @@ from .models import Job, Application
 
 
 @receiver([post_save,post_delete],sender=Job)
-def invalidate_cache(sender,instance, **kwargs):
-    cache.delete_pattern('*job-list*')
+def invalidate_job_cache(sender,instance, **kwargs):
+    cache.delete_pattern("views.decorators.cache.cache_page.*")
