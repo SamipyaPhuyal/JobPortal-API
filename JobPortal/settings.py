@@ -137,8 +137,8 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         "anon": "100/hour",
         "user": "100/hour",
-        "job-list": "5/hour",
-        "job-create": "5/hour",
+        "job-list": "500/hour",
+        "job-create": "500/hour",
     }
     }
 SIMPLE_JWT = {
@@ -156,4 +156,14 @@ SWAGGER_SETTINGS = {
     },
     'DEFAULT_INFO': 'NotesAPI.urls.schema_view',
     'USE_SESSION_AUTH': False,  # 🔹 important to hide Basic Auth
+}
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://default:aXPYwnViAt1aDTuIKcnEngTwSGrRGb1o@redis-10561.c10.us-east-1-4.ec2.cloud.redislabs.com:10561/0",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
 }
