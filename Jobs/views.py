@@ -1,5 +1,6 @@
 from django.shortcuts import redirect, render
 from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_headers
 from django.core.cache import cache
 from django.utils.decorators import method_decorator
 from Jobs.api.permissions import ApplyJobs, EditJobs, PostJobs
@@ -24,11 +25,12 @@ class JobViewSet(generics.ListCreateAPIView):
     
     import time
 
+    @method_decorator(vary_on_headers('Authorization'))
     def list(self, request, *args, **kwargs):
         import time
         t0 = time.time()
 
-        cache_key = "job-list"
+        cache_key =f"job-list:{request.get_full_path()}"
         data = cache.get(cache_key)
 
         print("cache_get:", time.time() - t0)
