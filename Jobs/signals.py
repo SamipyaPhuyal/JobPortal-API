@@ -3,8 +3,9 @@ from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from .models import Job, Application
+from django.core.cache import cache
 
-
-@receiver([post_save,post_delete],sender=Job)
-def invalidate_job_cache(sender,instance, **kwargs):
-    cache.delete_pattern("views.decorators.cache.cache_page.*")
+@receiver(post_save,sender=Job)
+@receiver(post_delete,sender=Job)  
+def invalidate_cache(sender, instance, **kwargs):
+    cache.delete_pattern("job-list")

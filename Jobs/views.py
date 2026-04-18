@@ -1,5 +1,6 @@
 from django.shortcuts import redirect, render
 from django.views.decorators.cache import cache_page
+from django.core.cache import cache
 from django.utils.decorators import method_decorator
 from Jobs.api.permissions import ApplyJobs, EditJobs, PostJobs
 from .models import Application, Job
@@ -21,14 +22,33 @@ class JobViewSet(generics.ListCreateAPIView):
     filterset_fields = ['position','location','type']
     search_fields = ['position','location','type']
     
-    @method_decorator(cache_page(60*15),name='job-list')
+    import time
+
     def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
-    
-    def  get_queryset(self):
         import time
-        time.sleep(2)
-        return super().get_queryset()
+        t0 = time.time()
+
+        cache_key = "job-list"
+        data = cache.get(cache_key)
+
+        print("cache_get:", time.time() - t0)
+
+        if data is None:
+            print("CACHE MISS")
+            t1 = time.time()
+            response = super().list(request, *args, **kwargs)
+            print("super().list:", time.time() - t1)
+
+            data = response.data
+            cache.set(cache_key, data, timeout=300)
+        else:
+            print("CACHE HIT")
+
+        print("total view time:", time.time() - t0)
+
+        return Response(data)
+    
+
     
     def get_throttles(self):
         if self.request.method=="GET":
