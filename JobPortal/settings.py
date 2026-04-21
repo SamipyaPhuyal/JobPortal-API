@@ -168,7 +168,7 @@ CACHES = {
     }
 }
 
-CELERY_BROKER_URl='redis://default:aXPYwnViAt1aDTuIKcnEngTwSGrRGb1o@redis-10561.c10.us-east-1-4.ec2.cloud.redislabs.com:10561/0'
+CELERY_BROKER_URL='redis://default:aXPYwnViAt1aDTuIKcnEngTwSGrRGb1o@redis-10561.c10.us-east-1-4.ec2.cloud.redislabs.com:10561/0'
 
 CELERY_RESULT_BACKEND='redis://default:aXPYwnViAt1aDTuIKcnEngTwSGrRGb1o@redis-10561.c10.us-east-1-4.ec2.cloud.redislabs.com:10561/0'
 

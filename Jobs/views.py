@@ -13,7 +13,6 @@ from rest_framework.response import Response
 from Jobs.api.pagination import JobPagination
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
-from .tasks import send_email
 
 class JobViewSet(generics.ListCreateAPIView):
     queryset = Job.objects.all()
@@ -26,30 +25,30 @@ class JobViewSet(generics.ListCreateAPIView):
     
     import time
 
-    @method_decorator(vary_on_headers('Authorization'))
-    def list(self, request, *args, **kwargs):
-        import time
-        t0 = time.time()
+    # @method_decorator(vary_on_headers('Authorization'))
+    # def list(self, request, *args, **kwargs):
+    #     import time
+    #     t0 = time.time()
 
-        cache_key =f"job-list:{request.get_full_path()}"
-        data = cache.get(cache_key)
+    #     cache_key =f"job-list:{request.get_full_path()}"
+    #     data = cache.get(cache_key)
 
-        print("cache_get:", time.time() - t0)
+    #     print("cache_get:", time.time() - t0)
 
-        if data is None:
-            print("CACHE MISS")
-            t1 = time.time()
-            response = super().list(request, *args, **kwargs)
-            print("super().list:", time.time() - t1)
+    #     if data is None:
+    #         print("CACHE MISS")
+    #         t1 = time.time()
+    #         response = super().list(request, *args, **kwargs)
+    #         print("super().list:", time.time() - t1)
 
-            data = response.data
-            cache.set(cache_key, data, timeout=300)
-        else:
-            print("CACHE HIT")
+    #         data = response.data
+    #         cache.set(cache_key, data, timeout=1)
+    #     else:
+    #         print("CACHE HIT")
 
-        print("total view time:", time.time() - t0)
+    #     print("total view time:", time.time() - t0)
 
-        return Response(data)
+    #     return Response(data)
     
 
     
@@ -92,7 +91,7 @@ class ApplicationView(APIView):
             serializer.save(applicant=request.user, job=job)
             job.total_applications=job.total_applications + 1
             job.save()
-            send_email.delay(pk)
+           
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
        
@@ -107,7 +106,7 @@ class ApplicationView(APIView):
             serializer = ApplicationSerializer(application, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
-                return Response(serializer.data)
+                return Response(serializer.data, status=200)
             return Response(serializer.errors, status=400)
         return Response({"message": "You do not have permission to update this application."}, status=403)
 
