@@ -13,6 +13,7 @@ from rest_framework.response import Response
 from Jobs.api.pagination import JobPagination
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from .tasks import send_email
 
 class JobViewSet(generics.ListCreateAPIView):
     queryset = Job.objects.all()
@@ -91,6 +92,7 @@ class ApplicationView(APIView):
             serializer.save(applicant=request.user, job=job)
             job.total_applications=job.total_applications + 1
             job.save()
+            send_email.delay(pk)
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
        
