@@ -27,7 +27,7 @@ class ApplyJobs(permissions.BasePermission):
                 return (request.user.is_authenticated and user_type == "employee") or (request.user.is_authenticated and request.user.is_staff)
             return False
         if request.method == 'PATCH':
-            if Application.objects.filter(id=view.kwargs['pk'], applicant=request.user).exists():
+            if Application.objects.filter(id=view.kwargs['pk'], applicant=request.user).exists() and request.data != "status":
                 return True
             elif Application.objects.filter(id=view.kwargs['pk'], job__posted_by=request.user).exists():
                 return True
