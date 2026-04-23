@@ -112,7 +112,6 @@ class ApplicationView(APIView):
 
 class ApplicationListView(generics.ListAPIView):
     serializer_class = ApplicationSerializer
-    
     def get_queryset(self):
         user = self.request.user
         user_type=getattr(getattr(user, 'userprofile', None), 'type', None)
