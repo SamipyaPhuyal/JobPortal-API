@@ -14,6 +14,8 @@ from Jobs.api.pagination import JobPagination
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
+def home(request):
+    return render(request, 'Jobs/index.html')
 class JobViewSet(generics.ListCreateAPIView):
     queryset = Job.objects.all()
     serializer_class = JobSerializer
